@@ -24,11 +24,12 @@ if __name__ == "__main__":
         print("RequestError:", 404)
         sys.exit(1)
 
-    username = data[0]["user"]["username"]
+    username = data[0].get("user", {}).get("username")
 
     with open(f"{EMPLOYEE_ID}.csv", "w", newline="") as file:
         writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC)
         for task in data:
             writer.writerow(
-                [EMPLOYEE_ID, username, str(task["completed"]), task["title"]]
+                [EMPLOYEE_ID, username, str(task.get("completed")), task.get("title")]
             )
+            
