@@ -1,44 +1,38 @@
 #!/usr/bin/python3
-"""
-Fetch and display TODO‑list progress for a given employee ID.
-"""
+"""Script to use a REST API for a given employee ID, returns
+information about his/her TODO list progress"""
 import requests
 import sys
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2 or not sys.argv[1].isdigit():
-        print("Usage: ./0-gather_data_from_an_API.py <employee_id>")
+    if len(sys.argv) != 2:
+        print(f"UsageError: python3 {__file__} missing employee_id(int)")
         sys.exit(1)
 
-    employee_id = int(sys.argv[1])
+    API_URL = "https://jsonplaceholder.typicode.com"
+    EMPLOYEE_ID = sys.argv[1]
 
-    # Get user info
-    user_url = (
-        f"https://jsonplaceholder.typicode.com/users/{employee_id}"
+    response = requests.get(
+        f"{API_URL}/users/{EMPLOYEE_ID}/todos",
+        params={"_expand": "user"} 
     )
-    user_response = requests.get(user_url, timeout=10)
-    if user_response.status_code != 200:
-        print("Employee not found.")
+    data = response.json()
+
+    if response.status_code == 404:
+        print("RequestError:", 404)
+        sys.exit(1)
+    elif not data:
+        print("No tasks found for that employee ID.")
         sys.exit(1)
 
-    employee_name = user_response.json().get("name")
+    EMPLOYEE_NAME = data[0].get("user", {}).get("name")
+    done_tasks = [task for task in data if task.get("completed")]
+    NUMBER_OF_DONE_TASKS = len(done_tasks)
+    TOTAL_NUMBER_OF_TASKS = len(data)
 
-    # Get user's TODOs
-    todos_url = "https://jsonplaceholder.typicode.com/todos"
-    todos_response = requests.get(
-        todos_url, params={"userId": employee_id}, timeout=10
-    )
-    todos = todos_response.json()
-
-    # Filter completed tasks
-    done_tasks = [task for task in todos if task.get("completed")]
-    done_count = len(done_tasks)
-    total_tasks = len(todos)
-
-    print(
-        f"Employee {employee_name} is done with tasks"
-        f"({done_count}/{total_tasks}):"
-    )
+    print(f"Employee {EMPLOYEE_NAME} is done with tasks"
+          f"({NUMBER_OF_DONE_TASKS}/{TOTAL_NUMBER_OF_TASKS}):")
     for task in done_tasks:
-        print(f"\t {task.get('title')}")
+        TASK_TITLE = task.get("title")
+        print(f"\t {TASK_TITLE}")
