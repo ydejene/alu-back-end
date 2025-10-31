@@ -15,8 +15,7 @@ if __name__ == "__main__":
 
     response = requests.get(
         f"{API_URL}/users/{EMPLOYEE_ID}/todos",
-        params={"_expand": "user"} 
-    )
+        params={"_expand": "user"})
     data = response.json()
 
     if response.status_code == 404:
