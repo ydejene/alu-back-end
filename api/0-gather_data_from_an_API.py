@@ -4,10 +4,9 @@ information about his/her TODO list progress"""
 import requests
 import sys
 
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print(f"UsageError: python3 {__file__} employee_id(int)")
+        print(f"UsageError: python3 {__file__} missing employee_id(int)")
         sys.exit(1)
 
     API_URL = "https://jsonplaceholder.typicode.com"
@@ -15,20 +14,33 @@ if __name__ == "__main__":
 
     response = requests.get(
         f"{API_URL}/users/{EMPLOYEE_ID}/todos",
-        params={"_expand": "user"}
+        params={"_expand": "user"} # query parameter added to get extra user related info
     )
     data = response.json()
 
-    if not len(data):
+    if response.status_code == 404:
         print("RequestError:", 404)
         sys.exit(1)
+    elif not data:
+        print("No tasks found for that employee ID.")
+        sys.exit(1)
 
-    employee_name = data[0]["user"]["name"]
+    employee_name = data[0].get("user", {}).get("name")
     total_tasks = len(data)
-    done_tasks = [task for task in data if task["completed"]]
+    # the below code is called a list comprehension
+    """
+    it is same as:
+    done_tasks = []
+    for task in data:
+        if task["completed"]:
+            done_tasks.append(task)
+    """
+    done_tasks = [task for task in data if task.get("completed")]
     total_done_tasks = len(done_tasks)
 
     print(f"Employee {employee_name} is done with tasks"
           f"({total_done_tasks}/{total_tasks}):")
     for task in done_tasks:
-        print(f"\t {task['title']}")
+        print(f"\t {task.get("title")}")
+        
+        
