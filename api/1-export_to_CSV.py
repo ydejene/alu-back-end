@@ -30,5 +30,5 @@ if __name__ == "__main__":
         writer = csv.writer(file, quoting=csv.QUOTE_NONNUMERIC)
         for task in data:
             writer.writerow(
-                [EMPLOYEE_ID, username, str(task.get("completed")), 
-                 task.get("title")])
+                [EMPLOYEE_ID, username, str(task.get("completed")),
+                task.get("title")])
