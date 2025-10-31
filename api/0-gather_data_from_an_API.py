@@ -9,7 +9,7 @@ if __name__ == "__main__":
         print(f"UsageError: python3 {__file__} missing employee_id(int)")
         sys.exit(1)
 
-    API_URL = "https://jsonplaceholder.typicode.com"
+    API_URL = "https:#jsonplaceholder.typicode.com"
     EMPLOYEE_ID = sys.argv[1]
 
     response = requests.get(
@@ -28,13 +28,11 @@ if __name__ == "__main__":
     employee_name = data[0].get("user", {}).get("name")
     total_tasks = len(data)
     # the below code is called a list comprehension
-    """
-    it is same as:
-    done_tasks = []
-    for task in data:
-        if task["completed"]:
-            done_tasks.append(task)
-    """
+    # it is same as:
+    # done_tasks = []
+    # for task in data:
+    #    if task["completed"]:
+    #        done_tasks.append(task)
     done_tasks = [task for task in data if task.get("completed")]
     total_done_tasks = len(done_tasks)
 
@@ -42,5 +40,5 @@ if __name__ == "__main__":
           f"({total_done_tasks}/{total_tasks}):")
     for task in done_tasks:
         print(f"\t {task.get("title")}")
-        
+
         
