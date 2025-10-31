@@ -26,13 +26,12 @@ if __name__ == "__main__":
         print("No tasks found for that employee ID.")
         sys.exit(1)
 
-    EMPLOYEE_NAME = data[0].get("user", {}).get("name")
+    employee_name = data[0].get("user", {}).get("name")
+    total_tasks = len(data)
     done_tasks = [task for task in data if task.get("completed")]
-    NUMBER_OF_DONE_TASKS = len(done_tasks)
-    TOTAL_NUMBER_OF_TASKS = len(data)
+    total_done_tasks = len(done_tasks)
 
-    print(f"Employee {EMPLOYEE_NAME} is done with tasks"
-          f"({NUMBER_OF_DONE_TASKS}/{TOTAL_NUMBER_OF_TASKS}):")
+    print(f"Employee {employee_name} is done with tasks"
+          f"({total_done_tasks}/{total_tasks}):")
     for task in done_tasks:
-        TASK_TITLE = task.get("title")
-        print(f"\t {TASK_TITLE}")
+        print(f"\t {task.get("title")}")
