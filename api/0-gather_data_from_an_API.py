@@ -4,6 +4,7 @@ information about his/her TODO list progress"""
 import requests
 import sys
 
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print(f"UsageError: python3 {__file__} missing employee_id(int)")
@@ -14,7 +15,7 @@ if __name__ == "__main__":
 
     response = requests.get(
         f"{API_URL}/users/{EMPLOYEE_ID}/todos",
-        params={"_expand": "user"} # query parameter added to get extra user related info
+        params={"_expand": "user"} 
     )
     data = response.json()
 
@@ -27,12 +28,6 @@ if __name__ == "__main__":
 
     employee_name = data[0].get("user", {}).get("name")
     total_tasks = len(data)
-    # the below code is called a list comprehension
-    # it is same as:
-    # done_tasks = []
-    # for task in data:
-    #    if task["completed"]:
-    #        done_tasks.append(task)
     done_tasks = [task for task in data if task.get("completed")]
     total_done_tasks = len(done_tasks)
 
@@ -40,5 +35,3 @@ if __name__ == "__main__":
           f"({total_done_tasks}/{total_tasks}):")
     for task in done_tasks:
         print(f"\t {task.get("title")}")
-
-        
